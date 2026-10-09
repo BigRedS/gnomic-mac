@@ -1,0 +1,30 @@
+{
+  "title": "Tabby: Alt as Meta for readline - make alt+. work in the shell",
+  "rules": [
+    {
+      "description": "Tabby: physical Alt (= Cmd in Logitech Mac mode) + . b f d Backspace act as Meta (Esc-prefixed) for bash/readline",
+      "manipulators": [
+        { "type": "basic",
+          "from": { "key_code": "period", "modifiers": { "mandatory": ["left_command"] } },
+          "to": [ { "key_code": "escape" }, { "key_code": "period" } ],
+          "conditions": [ { "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.tabby$"] } ] },
+        { "type": "basic",
+          "from": { "key_code": "b", "modifiers": { "mandatory": ["left_command"] } },
+          "to": [ { "key_code": "escape" }, { "key_code": "b" } ],
+          "conditions": [ { "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.tabby$"] } ] },
+        { "type": "basic",
+          "from": { "key_code": "f", "modifiers": { "mandatory": ["left_command"] } },
+          "to": [ { "key_code": "escape" }, { "key_code": "f" } ],
+          "conditions": [ { "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.tabby$"] } ] },
+        { "type": "basic",
+          "from": { "key_code": "d", "modifiers": { "mandatory": ["left_command"] } },
+          "to": [ { "key_code": "escape" }, { "key_code": "d" } ],
+          "conditions": [ { "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.tabby$"] } ] },
+        { "type": "basic",
+          "from": { "key_code": "delete_or_backspace", "modifiers": { "mandatory": ["left_command"] } },
+          "to": [ { "key_code": "escape" }, { "key_code": "delete_or_backspace" } ],
+          "conditions": [ { "type": "frontmost_application_if", "bundle_identifiers": ["^org\\.tabby$"] } ] }
+      ]
+    }
+  ]
+}
