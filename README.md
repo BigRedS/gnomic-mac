@@ -316,5 +316,11 @@ Other things worth knowing about:
 - Hammerspoon's Finder Delete tap received no key events at all on 2026-10-27 while other events arrived, which points
   at Input Monitoring. Check it actually works.
 - Super+L, Super+D and Super+H take Option+L, Option+D and Option+H, which type characters on Mac keyboard layouts.
+- The full-screen-to-maximise catcher (`fullscreen = "maximise"`) works the first time but not reliably after that.
+  Seen on 2026-10-29: a second green-button click stayed in full screen, and in a scripted test a second cycle left
+  the window 30px tall. Likely causes: it trusts `hs.window.filter`'s change detection, which only compares
+  full-screen state after a 0.5s settle and can keep a stale "full screen" record, and it maximises on a fixed 1s
+  timer rather than once the exit has finished. Fix by checking `isFullScreen()` on every move/resize, and
+  maximising only after the window reports it's out and has stopped resizing; test several cycles in a row.
 - A full-screen screenshot (Cmd+Shift+3) with two displays makes one file per display, and the clipboard gets whichever
   was written last. GNOME captures all displays as one image. Cmd+Shift+4 or 5 for one area doesn't have this problem.
