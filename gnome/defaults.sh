@@ -57,6 +57,12 @@ done
 # by most recent use by default.
 defaults write com.apple.dock mru-spaces -bool false
 
+# One desktop spans every display, so switching desktops moves all screens
+# together. This is "Displays have separate Spaces" turned OFF (true = span).
+# Costs: the menu bar and Dock only appear on the main display, and a
+# full-screen app blanks the other displays. Needs a logout.
+defaults write com.apple.spaces spans-displays -bool true
+
 # Top-left hot corner → Mission Control: GNOME's Activities corner. Tapping
 # Super opens search instead (superTap in hammerspoon/init.lua).
 # 2 = Mission Control; modifier 0 = no key held.

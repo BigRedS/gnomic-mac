@@ -9,7 +9,7 @@ It's split into three layers, applied in order. Each works without the ones afte
 
 | Layer | What it does | Who it's for |
 |---|---|---|
-| `gnome` | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
+| `gnome` | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops spanning all displays on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
 | `pc-keyboard` | Ctrl, Super and Alt where a PC keyboard has them, on the MacBook keyboard and on a PC keyboard in Mac mode | Anyone with a PC-layout keyboard |
 | `personal` | My apps, file associations, webcam fix, terminal, 70/30 snapping | Me. Read it as an example, or skip it |
 
@@ -207,6 +207,10 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 - **macOS's own tiling *shortcuts* are off** (drag-to-snap stays on). Arrow keys carry a hidden fn flag, so the
   Globe+Ctrl+arrow tiling shortcuts also fired on plain Ctrl+arrows from external keyboards, moving windows instead of
   the cursor. `gnome/defaults.sh` disables those 18 shortcuts.
+- **One desktop spans both displays**, so switching moves every screen together ("Displays have separate Spaces" is
+  off). Stock GNOME only switches the primary display and leaves the others put; macOS can't do that, so this is the
+  nearer of the two it offers. The menu bar and Dock then only show on the main display, and full-screen apps blank
+  the other displays, so avoid full screen and maximise instead.
 - **Desktop switching is on Ctrl+Alt+arrows**, not Ctrl+arrows (the macOS default). That frees Ctrl+arrows for word
   movement, as on Linux.
 - **Karabiner's config is generated.** Each layer has a `karabiner.json` fragment; `karabiner/build.sh` merges them
