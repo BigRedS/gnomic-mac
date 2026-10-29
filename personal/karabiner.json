@@ -2,13 +2,14 @@
   "_comment": "Personal layer Karabiner rules. Merged by karabiner/build.sh; keys starting with _ are stripped.",
   "rules": [
     {
-      "description": "Tabby: physical Alt (= Cmd in Logitech Mac mode) + . b f d Backspace act as Meta (Esc-prefixed) for bash/readline",
+      "description": "Terminals (Tabby, iTerm2): physical Alt (= Cmd in Logitech Mac mode) + . b f d Backspace act as Meta (Esc-prefixed) for bash/readline. The terminals' own Option-as-Meta settings don't help, because this Alt key sends Cmd.",
       "manipulators": [
         {
           "conditions": [
             {
               "bundle_identifiers": [
-                "^org\\.tabby$"
+                "^org\\.tabby$",
+                "^com\\.googlecode\\.iterm2$"
               ],
               "type": "frontmost_application_if"
             }
@@ -35,7 +36,8 @@
           "conditions": [
             {
               "bundle_identifiers": [
-                "^org\\.tabby$"
+                "^org\\.tabby$",
+                "^com\\.googlecode\\.iterm2$"
               ],
               "type": "frontmost_application_if"
             }
@@ -62,7 +64,8 @@
           "conditions": [
             {
               "bundle_identifiers": [
-                "^org\\.tabby$"
+                "^org\\.tabby$",
+                "^com\\.googlecode\\.iterm2$"
               ],
               "type": "frontmost_application_if"
             }
@@ -89,7 +92,8 @@
           "conditions": [
             {
               "bundle_identifiers": [
-                "^org\\.tabby$"
+                "^org\\.tabby$",
+                "^com\\.googlecode\\.iterm2$"
               ],
               "type": "frontmost_application_if"
             }
@@ -116,7 +120,8 @@
           "conditions": [
             {
               "bundle_identifiers": [
-                "^org\\.tabby$"
+                "^org\\.tabby$",
+                "^com\\.googlecode\\.iterm2$"
               ],
               "type": "frontmost_application_if"
             }

@@ -17,7 +17,8 @@ brew "duti"
 brew "chezmoi"
 brew "git"
 
-cask "tabby"        # drop-down terminal on Ctrl+Space
+cask "iterm2"       # drop-down terminal on Ctrl+Space (hotkey window); settings in personal/iterm2/
+cask "tabby"        # previous drop-down terminal; remove once iTerm2 has stuck
 cask "coteditor"    # the "gedit": default for text/YAML/JSON
 cask "libreoffice"  # default for CSV
 cask "thunderbird"

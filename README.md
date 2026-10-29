@@ -135,9 +135,9 @@ What the layer does:
 
 ### 5. personal: manual steps
 
-Tabby:
-- Set Ctrl+Space as the drop-down trigger (`defaults.sh` frees it from input-source switching).
-- Maybe set *use option as meta key*. Probably not needed with the Karabiner rule below.
+iTerm2 needs nothing: `personal/defaults.sh` points it at `personal/iterm2/`, which already has the drop-down set up.
+Grant it Accessibility if it asks. If Tabby is still installed, quit it and remove it from Login Items, or it keeps
+Ctrl+Space and iTerm2's drop-down never sees the key.
 
 Teams has its own notification settings too. Trim them or you get duplicates.
 
@@ -178,10 +178,10 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 | Green button, **Ctrl + Cmd + F** | Maximise, never native full screen | personal | Hammerspoon (`fullscreen` setting) |
 | **Cmd + Shift + 3 / 4 / 5** | Screenshot to `~/Pictures/Screenshots` *and* the clipboard | gnome | macOS + Hammerspoon |
 | **Caps Lock** | Escape | personal | Karabiner |
-| **Ctrl + Space** | Drop-down terminal | personal | Tabby |
-| **Alt + .** (in Tabby) | Last argument | personal | Karabiner |
+| **Ctrl + Space** | Drop-down terminal | personal | iTerm2 hotkey window |
+| **Alt + .** (in iTerm2 or Tabby) | Last argument | personal | Karabiner |
 
-`DefaultKeyBinding.dict` only affects native Mac apps. Electron apps (Teams, Slack, VS Code, Tabby) ignore it.
+`DefaultKeyBinding.dict` only affects native Mac apps. Electron apps (Teams, Slack, VS Code) ignore it.
 
 ---
 
@@ -239,11 +239,21 @@ Finder's *Change All…* is forever being overridden by apps, so `init.sh` runs 
 file types at the apps in `personal/duti.conf`. duti is really prompt-happy (every change needs a confirmation), so
 the script only applies the entries that have drifted.
 
-### Tabby: Quake-style drop-down terminal
+### iTerm2: Quake-style drop-down terminal
 
-Getting Alt to work as Meta in the shell needs care: physical Alt sends Cmd. A Karabiner rule in
-`personal/karabiner.json` turns Alt+`.`/`b`/`f`/`d`/Backspace into Escape-then-key, only when Tabby is frontmost.
-`osascript -e 'id of app "Tabby"'` should print `org.tabby`.
+iTerm2's "hotkey window" is a profile, *Hotkey Window*, in `personal/iterm2/com.googlecode.iterm2.plist`: Ctrl+Space,
+attached to the top edge, 40% of the height and full width, on the display with the mouse pointer, on every desktop,
+and it stays put when something else gets focus. Tabs are along the bottom (a global setting, not per profile).
+
+iTerm2 loads that file at launch and saves changes made in its settings window straight back to it, so fonts and
+colour schemes can be fiddled with the mouse and still end up in git. The file also picks up incidental state, so expect
+noisy diffs: commit it now and then rather than tracking every tweak. For automatic light/dark switching, tick
+*Profiles → Colors → Use separate colors for light and dark mode*.
+
+Getting Alt to work as Meta in the shell needs care: physical Alt sends Cmd, and every terminal's own Meta setting
+works on Option instead. A Karabiner rule in `personal/karabiner.json` turns Alt+`.`/`b`/`f`/`d`/Backspace into
+Escape-then-key, only when iTerm2 or Tabby is frontmost. `osascript -e 'id of app "iTerm"'` should print
+`com.googlecode.iterm2`.
 
 ### Bash
 
