@@ -42,7 +42,7 @@ One repo, three layers, each usable without the ones after it:
 | Home/End, Ctrl+arrows word-jump | gnome | `DefaultKeyBinding.dict` (needs adding; it's referenced but missing) |
 | Notification-list setup | gnome | README manual steps |
 | fn ↔ Ctrl on MacBook keyboard | pc-keyboard | Karabiner device rule |
-| Right Option → Right Ctrl on PC keyboard | pc-keyboard | Karabiner device rule; vendor/product IDs in a config file |
+| Right Option → Right Ctrl on PC keyboard | pc-keyboard | Karabiner device rule; vendor/product IDs in the fragment |
 | British – PC input source, ANSI virtual keyboard | pc-keyboard | README manual steps |
 | Caps Lock ↔ Escape | personal | Karabiner |
 | Tabby + Alt-as-Meta rule | personal | Brewfile + Karabiner |
@@ -56,9 +56,10 @@ One repo, three layers, each usable without the ones after it:
 ```
 init.sh                         runs each layer's steps; flags to skip layers
 gnome/        Brewfile  defaults.sh  hammerspoon.lua  karabiner.json  DefaultKeyBinding.dict
-pc-keyboard/  defaults.sh  karabiner.json  keyboards.conf
+pc-keyboard/  defaults.sh  karabiner.json
 personal/     Brewfile  defaults.sh  hammerspoon.lua  karabiner.json  duti.conf
 hammerspoon/init.lua            loads gnome.lua, then personal.lua if present
+karabiner/build.sh              merges each layer's karabiner.json into ~/.config/karabiner/karabiner.json
 ```
 
 Brewfiles replace the arrays in `init.sh`; `brew bundle --file=<layer>/Brewfile` is existing tooling.
@@ -75,8 +76,8 @@ Brewfiles replace the arrays in `init.sh`; `brew bundle --file=<layer>/Brewfile`
 
 Each step a separate commit, tested on this machine before the next:
 
-1. Hammerspoon split into `gnome.lua` / `personal.lua`; Super consistently on Option.
-2. Karabiner fragments + jq merge step; tap-Super moves from Cmd to Option.
+1. Done: Hammerspoon split into `gnome.lua` / `personal.lua`; Super consistently on Option; tap-Super on Option.
+2. Done: Karabiner fragments + jq merge step.
 3. Brewfiles and per-layer `defaults.sh`.
 4. `init.sh` rewritten around layers; fix the broken paths.
 5. README rewritten per layer.

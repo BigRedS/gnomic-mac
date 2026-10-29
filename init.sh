@@ -154,9 +154,17 @@ link "$REPO/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua"
 link "$REPO/gnome/hammerspoon.lua" "$HOME/.hammerspoon/gnome.lua"
 link "$REPO/personal/hammerspoon.lua" "$HOME/.hammerspoon/personal.lua"
 
-# Karabiner rewrites karabiner.json by replacing the file, which breaks a
-# symlink to the file itself — so link the whole directory instead.
-link "$REPO/karabiner" "$HOME/.config/karabiner"
+# Karabiner's config is generated from each layer's fragment into a real
+# ~/.config/karabiner, where Karabiner also keeps its backups. Older setups
+# linked that directory into the repo; keep the live file and undo that.
+if [ -L "$HOME/.config/karabiner" ]; then
+  old_karabiner="$(cd "$HOME/.config/karabiner" && pwd -P)"
+  rm "$HOME/.config/karabiner"
+  mkdir -p "$HOME/.config/karabiner"
+  [ -f "$old_karabiner/karabiner.json" ] && cp -p "$old_karabiner/karabiner.json" "$HOME/.config/karabiner/"
+  did "replaced ~/.config/karabiner symlink with a real directory (restart Karabiner-Elements to pick it up)"
+fi
+"$REPO/karabiner/build.sh" "$REPO/gnome" "$REPO/pc-keyboard" "$REPO/personal"
 
 # Default-app list read by fix-defaults.
 link "$REPO/duti.conf" "$HOME/.duti"

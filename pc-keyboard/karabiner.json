@@ -1,0 +1,57 @@
+{
+  "_comment": "PC-keyboard layer: put Ctrl, Super and Alt where a PC keyboard has them. Merged by karabiner/build.sh; keys starting with _ are stripped.",
+  "devices": [
+    {
+      "_comment": "Built-in MacBook keyboard. Karabiner reports it with no vendor/product IDs, so is_keyboard alone matches only it. Swap fn and Ctrl so Ctrl is bottom-left; fn+arrows still gives Home/End/PgUp/PgDn.",
+      "identifiers": {
+        "is_keyboard": true
+      },
+      "simple_modifications": [
+        {
+          "from": {
+            "apple_vendor_top_case_key_code": "keyboard_fn"
+          },
+          "to": [
+            {
+              "key_code": "left_control"
+            }
+          ]
+        },
+        {
+          "from": {
+            "key_code": "left_control"
+          },
+          "to": [
+            {
+              "apple_vendor_top_case_key_code": "keyboard_fn"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "_comment": "Logitech MX Mechanical Mini in Mac mode, where the right-hand Ctrl position sends Option. macOS settings cannot tell left Option from right, so only Karabiner can fix this without breaking Super. For another keyboard, swap in the vendor_id/product_id from Karabiner-EventViewer > Devices.",
+      "identifiers": {
+        "is_keyboard": true,
+        "product_id": 45927,
+        "vendor_id": 1133
+      },
+      "simple_modifications": [
+        {
+          "from": {
+            "key_code": "right_option"
+          },
+          "to": [
+            {
+              "key_code": "right_control"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "virtual_hid_keyboard": {
+    "_comment": "ANSI, not ISO, is what makes British PC layout come out right through Karabiner. Found by trial.",
+    "keyboard_type_v2": "ansi"
+  }
+}
