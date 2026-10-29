@@ -13,44 +13,44 @@ hs.window.animationDuration = 0
 ---------------------------------------------------------------------------
 -- 1. Tap Cmd on its own -> Activities (Mission Control)
 --    Holding Cmd, or using it with any key or click, does nothing extra.
+--
+--    The tap itself is detected by Karabiner (to_if_alone on left Cmd -> F19,
+--    see karabiner/assets/complex_modifications/karabiner-cmd-tap.json), not
+--    here. An eventtap in Hammerspoon can't do it: it never sees the Tab of
+--    Cmd+Tab (AltTab / the app switcher eat it first), and it does see the
+--    fake Cmd release Karabiner emits when rewriting Cmd+. for Tabby, so both
+--    looked like a clean tap. What Karabiner can't see is the trackpad, so
+--    this side only vetoes the tap if the mouse was used while Cmd was held.
 ---------------------------------------------------------------------------
 local LEFT_CMD = 55
-local TAP_MAX_SECONDS = 0.35
-
-local cmdDownAt = nil
 local types = hs.eventtap.event.types
+local cmdUsedWithMouse = false
 
 -- Kept global so it isn't garbage-collected and silently stop working.
-superTapWatcher = hs.eventtap.new({
-  types.flagsChanged, types.keyDown,
+cmdMouseWatcher = hs.eventtap.new({
+  types.flagsChanged,
   types.leftMouseDown, types.rightMouseDown, types.otherMouseDown,
   types.scrollWheel,
 }, function(e)
-  local t = e:getType()
-  if t ~= types.flagsChanged then
-    cmdDownAt = nil -- Cmd was used as a modifier
-    return false
-  end
-
-  local f = e:getFlags()
-  if e:getKeyCode() == LEFT_CMD then
-    if f.cmd and not (f.alt or f.ctrl or f.shift or f.fn) then
-      cmdDownAt = hs.timer.secondsSinceEpoch()
-    elseif not f.cmd and cmdDownAt then
-      local held = hs.timer.secondsSinceEpoch() - cmdDownAt
-      cmdDownAt = nil
-      if held < TAP_MAX_SECONDS then
-        hs.spaces.toggleMissionControl()
-        -- Swap for this if you'd rather Super open Raycast/Alfred:
-        -- hs.eventtap.keyStroke({ "cmd" }, "space")
-      end
-    end
-  else
-    cmdDownAt = nil
+  if e:getType() == types.flagsChanged then
+    -- Fresh Cmd press: forget any click from a previous hold that never
+    -- produced an F19 (e.g. Cmd+click then Cmd+C before letting go).
+    if e:getKeyCode() == LEFT_CMD and e:getFlags().cmd then cmdUsedWithMouse = false end
+  elseif e:getFlags().cmd then
+    cmdUsedWithMouse = true
   end
   return false
 end)
-superTapWatcher:start()
+cmdMouseWatcher:start()
+
+hs.hotkey.bind({}, "f19", function()
+  local used = cmdUsedWithMouse
+  cmdUsedWithMouse = false
+  if used then return end
+  hs.spaces.toggleMissionControl()
+  -- Swap for this if you'd rather Super open Raycast/Alfred:
+  -- hs.eventtap.keyStroke({ "cmd" }, "space")
+end)
 
 ---------------------------------------------------------------------------
 -- 2. Window snapping, GNOME-style
@@ -156,5 +156,35 @@ finderDeleteTap = hs.eventtap.new({ hs.eventtap.event.types.keyDown }, function(
   return true
 end)
 finderDeleteTap:start()
+
+
+---------------------------------------------------------------------------
+-- Webcam: force 50Hz anti-flicker on the C920 whenever it's connected
+---------------------------------------------------------------------------
+local UVC = os.getenv("HOME") .. "/bin/uvc-util"   -- adjust
+local WEBCAMS = {
+  { vendor = 0x046d, product = 0x082d },   -- Logitech HD Pro Webcam C920
+}
+
+local function setAntiFlicker(v, p)
+  local id = string.format("0x%04x:0x%04x", v, p)
+  local out, ok = hs.execute(UVC .. " -V " .. id .. " -s power-line-frequency=1 2>&1")
+  if not ok then print("uvc-util failed for " .. id .. ": " .. out) end
+end
+
+webcamWatcher = hs.usb.watcher.new(function(ev)
+  if ev.eventType ~= "added" then return end
+  for _, cam in ipairs(WEBCAMS) do
+    if ev.vendorID == cam.vendor and ev.productID == cam.product then
+      hs.timer.doAfter(3, function() setAntiFlicker(cam.vendor, cam.product) end)
+    end
+  end
+end):start()
+
+-- Also apply at Hammerspoon start, in case the camera is already plugged in.
+for _, cam in ipairs(WEBCAMS) do setAntiFlicker(cam.vendor, cam.product) end
+
+
+
 
 hs.alert.show("Hammerspoon config loaded")

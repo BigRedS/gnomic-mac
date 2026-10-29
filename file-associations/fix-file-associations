@@ -1,14 +1,17 @@
-#!/bin/sh
+#!/bin/bash
 
 if [ -z $1 ]; then
-  print "Provide a duti.conf file as an argument"
-  print "It's probably in this directory"
+  echo "Provide a duti.conf file as an argument"
+  echo "It's probably in this directory"
   exit 1
 fi
 
 conf=$1
 
-# ~/bin/fix-defaults: re-apply ~/.duti, but only where it's drifted
+# print the currenty config, if that differs from the config file, load the new config
+#
+# this is UI-prompt-happy so avoid loading the config as much as we can
+#
 grep -v '^\s*#' $conf | while read -r app uti role; do
   [ -z "$app" ] && continue
   current=$(duti -d "$uti" 2>/dev/null)

@@ -102,6 +102,18 @@
                                 "type": "basic"
                             }
                         ]
+                    },
+                    {
+                        "description": "Tap left Cmd alone -> F19. Lives in Karabiner, not Hammerspoon, because Hammerspoon never sees the Tab in Cmd+Tab (AltTab/app switcher eat it) but does see Karabiner's fake Cmd release from the Tabby Esc-prefix rule. Hammerspoon binds F19 and vetoes it if the mouse was used while Cmd was held, which Karabiner can't see (no trackpad access).",
+                        "manipulators": [
+                            {
+                                "from": { "key_code": "left_command" },
+                                "parameters": { "basic.to_if_alone_timeout_milliseconds": 350 },
+                                "to": [{ "key_code": "left_command" }],
+                                "to_if_alone": [{ "key_code": "f19" }],
+                                "type": "basic"
+                            }
+                        ]
                     }
                 ]
             },
