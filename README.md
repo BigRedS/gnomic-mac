@@ -141,6 +141,10 @@ Ctrl+Space and iTerm2's drop-down never sees the key.
 
 Teams has its own notification settings too. Trim them or you get duplicates.
 
+BetterDisplay: macOS on Apple Silicon won't offer HiDPI modes on sub-4K screens, so 1440p monitors render text at
+1x. BetterDisplay's flexible HiDPI scaling fixes that, but it's a Pro feature (one-off licence, 14-day trial), and the
+free tier is for non-business use only. Settings are made per display in its menu-bar app.
+
 ### 6. Finish
 
 Log out and back in (keyboard shortcuts and key bindings fully apply after a fresh login), then run through
@@ -313,7 +317,6 @@ Finder (hidden files, extensions, path bar, search current folder), Reduce Motio
 
 Other things worth knowing about:
 
-- **BetterDisplay**: sharp text on non-4K external monitors (macOS dropped subpixel anti-aliasing).
 - **SSH keys in Keychain**: `~/.ssh/config` with `Host *`, `AddKeysToAgent yes`, `UseKeychain yes`.
 - **Global gitignore with `.DS_Store`**; and the filesystem is case-insensitive, which bites git case-only renames.
 - **Spotlight**: add code folders to *System Settings → Spotlight → Privacy* so it stops indexing `node_modules`.
