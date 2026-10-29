@@ -104,12 +104,12 @@
                         ]
                     },
                     {
-                        "description": "Tap left Cmd alone -> F19. Lives in Karabiner, not Hammerspoon, because Hammerspoon never sees the Tab in Cmd+Tab (AltTab/app switcher eat it) but does see Karabiner's fake Cmd release from the Tabby Esc-prefix rule. Hammerspoon binds F19 and vetoes it if the mouse was used while Cmd was held, which Karabiner can't see (no trackpad access).",
+                        "description": "Tap left Option (Super) alone -> F19, which Hammerspoon turns into Activities. Detected here, not in Hammerspoon, because Karabiner sees every key that should cancel a tap (including ones AltTab eats) and none of its own synthetic modifier releases. Hammerspoon vetoes it if the mouse was used while Super was held, because Karabiner can't see the trackpad.",
                         "manipulators": [
                             {
-                                "from": { "key_code": "left_command" },
+                                "from": { "key_code": "left_option" },
                                 "parameters": { "basic.to_if_alone_timeout_milliseconds": 350 },
-                                "to": [{ "key_code": "left_command" }],
+                                "to": [{ "key_code": "left_option" }],
                                 "to_if_alone": [{ "key_code": "f19" }],
                                 "type": "basic"
                             }

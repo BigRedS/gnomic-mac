@@ -146,7 +146,13 @@ done
 step "Config files"
 ###############################################################################
 
+# ~/.hammerspoon is a real directory of per-layer symlinks, so skipping a
+# layer is just not linking its module. Older setups linked the whole
+# directory into the repo; undo that first or the links land in the repo.
+[ -L "$HOME/.hammerspoon" ] && rm "$HOME/.hammerspoon" && did "removed old ~/.hammerspoon directory symlink"
 link "$REPO/hammerspoon/init.lua" "$HOME/.hammerspoon/init.lua"
+link "$REPO/gnome/hammerspoon.lua" "$HOME/.hammerspoon/gnome.lua"
+link "$REPO/personal/hammerspoon.lua" "$HOME/.hammerspoon/personal.lua"
 
 # Karabiner rewrites karabiner.json by replacing the file, which breaks a
 # symlink to the file itself — so link the whole directory instead.
