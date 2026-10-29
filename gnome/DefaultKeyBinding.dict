@@ -1,0 +1,28 @@
+/* PC/GNOME-style text movement in native Cocoa apps (TextEdit, Mail, Notes,
+ * CotEditor, Safari text fields...). Electron apps (Slack, Teams, Tabby, VS
+ * Code) ignore this file and keep their own bindings.
+ *
+ * Copied, not symlinked, to ~/Library/KeyBindings/ by init.sh: some sandboxed
+ * apps won't follow a symlink there. Quit and reopen apps to pick it up.
+ *
+ * ^ = Ctrl, $ = Shift. \UF729 Home, \UF72B End, \UF702 Left, \UF703 Right,
+ * \U007F Backspace, \UF728 forward Delete.
+ */
+{
+    "\UF729"   = "moveToBeginningOfLine:";
+    "\UF72B"   = "moveToEndOfLine:";
+    "$\UF729"  = "moveToBeginningOfLineAndModifySelection:";
+    "$\UF72B"  = "moveToEndOfLineAndModifySelection:";
+    "^\UF729"  = "moveToBeginningOfDocument:";
+    "^\UF72B"  = "moveToEndOfDocument:";
+    "^$\UF729" = "moveToBeginningOfDocumentAndModifySelection:";
+    "^$\UF72B" = "moveToEndOfDocumentAndModifySelection:";
+
+    "^\UF702"  = "moveWordLeft:";
+    "^\UF703"  = "moveWordRight:";
+    "^$\UF702" = "moveWordLeftAndModifySelection:";
+    "^$\UF703" = "moveWordRightAndModifySelection:";
+
+    "^\U007F"  = "deleteWordBackward:";
+    "^\UF728"  = "deleteWordForward:";
+}

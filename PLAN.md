@@ -39,7 +39,7 @@ One repo, three layers, each usable without the ones after it:
 | Ctrl+Alt+arrows desktops; macOS tiling shortcuts off | gnome | `defaults` |
 | Stage Manager off, click-wallpaper off, expanded save dialogs | gnome | `defaults` |
 | Finder Delete → Bin | gnome | Hammerspoon `gnome.lua` |
-| Home/End, Ctrl+arrows word-jump | gnome | `DefaultKeyBinding.dict` (needs adding; it's referenced but missing) |
+| Home/End, Ctrl+arrows word-jump | gnome | `DefaultKeyBinding.dict` |
 | Notification-list setup | gnome | README manual steps |
 | fn ↔ Ctrl on MacBook keyboard | pc-keyboard | Karabiner device rule |
 | Right Option → Right Ctrl on PC keyboard | pc-keyboard | Karabiner device rule; vendor/product IDs in the fragment |
@@ -78,6 +78,6 @@ Each step a separate commit, tested on this machine before the next:
 
 1. Done: Hammerspoon split into `gnome.lua` / `personal.lua`; Super consistently on Option; tap-Super on Option.
 2. Done: Karabiner fragments + jq merge step.
-3. Brewfiles and per-layer `defaults.sh`.
-4. `init.sh` rewritten around layers; fix the broken paths.
+3. Done: Brewfiles and per-layer `defaults.sh`.
+4. Done: `init.sh` rewritten around layers; broken paths fixed; `DefaultKeyBinding.dict` written.
 5. README rewritten per layer.
