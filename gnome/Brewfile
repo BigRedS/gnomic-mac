@@ -1,0 +1,4 @@
+# GNOME layer. Install with: brew bundle --file=gnome/Brewfile
+cask "hammerspoon"         # window keys, tap-Super veto, Finder Delete key
+cask "karabiner-elements"  # tap-Super detection; also needed by pc-keyboard
+cask "alt-tab"             # Alt+Tab switches windows, not apps

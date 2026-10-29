@@ -1,0 +1,26 @@
+# Personal layer. Install with: brew bundle --file=personal/Brewfile
+
+# Shell: modern bash instead of macOS's 3.2 from 2007; made the login shell by init.sh --admin
+brew "bash"
+brew "bash-completion@2"
+# GNU userland under g-prefixed names (gsed, gdate…), aliased in ~/.bashrc_macos, NOT put on PATH:
+# some tools detect macOS and expect BSD behaviour from the plain names.
+brew "coreutils"
+brew "gnu-sed"
+brew "findutils"
+brew "grep"
+brew "gawk"
+brew "gnu-tar"
+# File associations, applied from personal/duti.conf
+brew "duti"
+# Dotfiles
+brew "chezmoi"
+brew "git"
+
+cask "tabby"        # drop-down terminal on Ctrl+Space
+cask "coteditor"    # the "gedit": default for text/YAML/JSON
+cask "libreoffice"  # default for CSV
+cask "thunderbird"
+# Not installed here:
+#   firefox: brew upgrading it underneath a running session forces a restart that loses work
+#   microsoft-teams, granola: MDM-managed on the work Mac

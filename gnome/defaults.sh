@@ -1,11 +1,11 @@
 #!/bin/bash
-# macos-defaults.sh — the scriptable half of the Mac setup.
+# gnome/defaults.sh — the scriptable System Settings for the GNOME layer.
 # Safe to re-run. User-level only (no sudo).
 #
-# Section 1 = things actually decided/set up. Section 2 = candidates from the
-# "common Linux→Mac complaints" list, commented out until chosen — uncomment as you adopt them.
+# Section 1 = in use. Section 2 = candidates from the "common Linux→Mac
+# complaints" list, commented out until chosen.
 #
-# Lines marked VERIFY: key names I'm less sure of on current macOS. Check once with
+# Lines marked VERIFY: key names not yet checked on a fresh Mac. Check once with
 #   defaults read > /tmp/before; <change it in System Settings>; defaults read > /tmp/after; diff /tmp/before /tmp/after
 
 set -u
@@ -27,10 +27,6 @@ defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
 # Expanded save dialogs (so you can see where things go)
 defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
 defaults write -g NSNavPanelExpandedStateForSaveMode2 -bool true
-
-# Free Ctrl+Space for Tabby (and Ctrl+Opt+Space) from input-source switching   # VERIFY
-defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 60 "<dict><key>enabled</key><false/></dict>"
-defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 61 "<dict><key>enabled</key><false/></dict>"
 
 # Ctrl+Cmd+Left/Right (= Ctrl+Alt on the Logitech) → move left/right a Space    (verified)
 # 79 = Move left a space, 81 = Move right a space. Params: char (65535 = none), keycode (123 ←, 124 →),
