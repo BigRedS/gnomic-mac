@@ -53,17 +53,35 @@ for id in 233 235 237 238 239 240 241 242 243 244 245 246 247 248 249 250 251 25
   defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add "$id" "<dict><key>enabled</key><false/></dict>"
 done
 
+# Desktops stay in a fixed order, as GNOME's workspaces do. macOS reorders them
+# by most recent use by default.
+defaults write com.apple.dock mru-spaces -bool false
+
+# Top-left hot corner → Mission Control: GNOME's Activities corner. Tapping
+# Super opens search instead (superTap in hammerspoon/init.lua).
+# 2 = Mission Control; modifier 0 = no key held.
+defaults write com.apple.dock wvous-tl-corner -int 2
+defaults write com.apple.dock wvous-tl-modifier -int 0
+
+# Double-click a title bar → Fill (maximise), as in GNOME.   (verified: value set via System Settings)
+defaults write -g AppleActionOnDoubleClick -string "Fill"
+
+# Screenshots saved to ~/Pictures/Screenshots, as in GNOME; Hammerspoon also
+# copies each one to the clipboard (gnome/hammerspoon.lua). The floating
+# thumbnail is off because macOS only writes the file once the thumbnail
+# goes away, which would delay the clipboard copy by several seconds.
+# The location must match screenshotDir in hammerspoon/init.lua.
+mkdir -p "$HOME/Pictures/Screenshots"
+defaults write com.apple.screencapture location -string "$HOME/Pictures/Screenshots"
+defaults write com.apple.screencapture show-thumbnail -bool false
+
 ###############################################################################
 # 2. CANDIDATES — not yet decided; uncomment to adopt
 ###############################################################################
 
 # --- Spaces / Dock (suggested early on, never confirmed) ---
-# defaults write com.apple.dock mru-spaces -bool false           # keep Spaces in fixed order
-# defaults write com.apple.dock wvous-tl-corner -int 2           # top-left hot corner → Mission Control
-# defaults write com.apple.dock wvous-tl-modifier -int 0
 # defaults write com.apple.dock autohide -bool true
 # defaults write com.apple.dock autohide-delay -float 0
-# defaults write -g AppleActionOnDoubleClick -string "Fill"     # double-click title bar → Fill  VERIFY
 
 # --- Windows ---
 # defaults write -g NSWindowShouldDragOnGesture -bool true       # Ctrl+Cmd+drag moves windows (logout)
@@ -86,10 +104,6 @@ done
 # defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
 # defaults write com.apple.finder FXDefaultSearchScope -string SCcf   # search current folder
 # defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
-
-# --- Screenshots ---
-# mkdir -p "$HOME/Pictures/Screenshots"
-# defaults write com.apple.screencapture location -string "$HOME/Pictures/Screenshots"
 
 # --- Accessibility (often needs Full Disk Access for the terminal) ---
 # defaults write com.apple.universalaccess reduceMotion -bool true

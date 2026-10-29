@@ -8,10 +8,19 @@ local function present(name)
   return hs.fs.attributes(hs.configdir .. "/" .. name .. ".lua") ~= nil
 end
 
--- GNOME snaps windows to halves. A later layer can override these.
+-- Defaults for the GNOME layer. A later layer can override these.
 local settings = {
+  -- GNOME snaps windows to halves.
   snapLeft = hs.layout.left50,
   snapRight = hs.layout.right50,
+  -- What tapping Super alone does. GNOME's Activities is two things at once,
+  -- a window overview and a search box, and macOS splits them:
+  --   "search"   Spotlight (Cmd+Space); the overview is on the top-left hot
+  --              corner, as in GNOME (set in gnome/defaults.sh)
+  --   "overview" Mission Control
+  superTap = "search",
+  -- Must match the screenshot location in gnome/defaults.sh.
+  screenshotDir = os.getenv("HOME") .. "/Pictures/Screenshots",
 }
 
 local personal = present("personal") and require("personal") or nil

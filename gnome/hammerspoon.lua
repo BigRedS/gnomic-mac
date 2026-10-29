@@ -22,12 +22,12 @@ local function withWindow(fn)
   end
 end
 
--- settings: { snapLeft = unit rect, snapRight = unit rect }
+-- settings: see hammerspoon/init.lua for what each one means.
 function M.start(settings)
   hs.window.animationDuration = 0
 
   ---------------------------------------------------------------------------
-  -- Tap Super on its own -> Activities (Mission Control)
+  -- Tap Super on its own -> search or overview (settings.superTap)
   --
   -- The tap is detected by Karabiner (to_if_alone on left Option -> F19), not
   -- here: an eventtap can't see everything that should cancel a tap (AltTab
@@ -55,7 +55,12 @@ function M.start(settings)
   hs.hotkey.bind({}, "f19", function()
     local used = superUsedWithMouse
     superUsedWithMouse = false
-    if not used then hs.spaces.toggleMissionControl() end
+    if used then return end
+    if settings.superTap == "overview" then
+      hs.spaces.toggleMissionControl()
+    else
+      hs.eventtap.keyStroke({ "cmd" }, "space", 0)
+    end
   end)
 
   ---------------------------------------------------------------------------
@@ -94,6 +99,9 @@ function M.start(settings)
     end
   end))
 
+  -- GNOME's Super+H hides the window; minimise is the Mac equivalent.
+  hs.hotkey.bind(SUPER, "h", withWindow(function(w) w:minimize() end))
+
   hs.hotkey.bind(SUPER_SHIFT, "left", withWindow(function(w)
     w:moveOneScreenWest(false, true)
   end))
@@ -107,6 +115,48 @@ function M.start(settings)
     hs.window.filter.windowDestroyed,
     function(w) if w then savedFrames[w:id()] = nil end end
   )
+
+  ---------------------------------------------------------------------------
+  -- Super+PgUp/PgDn -> previous/next desktop, alongside Ctrl+Alt+arrows.
+  -- macOS allows one shortcut per action, so these re-send the Ctrl+Cmd+arrow
+  -- shortcut set in gnome/defaults.sh. The fn flag is required: macOS stores
+  -- arrow-key shortcuts with it, and without it the synthetic key is ignored
+  -- (tested 2026-10-29).
+  ---------------------------------------------------------------------------
+  local function switchDesktop(arrow)
+    return function()
+      for _, down in ipairs({ true, false }) do
+        local e = hs.eventtap.event.newKeyEvent(arrow, down)
+        e:setFlags({ ctrl = true, cmd = true, fn = true })
+        e:post()
+      end
+    end
+  end
+  hs.hotkey.bind(SUPER, "pageup", switchDesktop("left"))
+  hs.hotkey.bind(SUPER, "pagedown", switchDesktop("right"))
+
+  ---------------------------------------------------------------------------
+  -- Screenshots go to a file and the clipboard, as in GNOME. macOS only does
+  -- one or the other, so it saves the file and this copies each new one.
+  -- macOS writes a hidden temporary file and renames it, so skip dotfiles,
+  -- and remember what's been copied since one screenshot fires several events.
+  ---------------------------------------------------------------------------
+  local copiedScreenshots = {}
+  -- Hammerspoon can start before init.sh has run defaults.sh on a fresh Mac.
+  if not hs.fs.attributes(settings.screenshotDir) then hs.fs.mkdir(settings.screenshotDir) end
+  M.screenshotWatcher = hs.pathwatcher.new(settings.screenshotDir, function(paths)
+    for _, path in ipairs(paths) do
+      local name = path:match("[^/]+$") or ""
+      if not name:match("^%.") and name:lower():match("%.png$")
+         and not copiedScreenshots[path] and hs.fs.attributes(path) then
+        local image = hs.image.imageFromPath(path)
+        if image then
+          copiedScreenshots[path] = true
+          hs.pasteboard.writeObjects(image)
+        end
+      end
+    end
+  end):start()
 
   ---------------------------------------------------------------------------
   -- Odds and ends

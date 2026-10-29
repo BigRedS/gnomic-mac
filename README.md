@@ -9,7 +9,7 @@ It's split into three layers, applied in order. Each works without the ones afte
 
 | Layer | What it does | Who it's for |
 |---|---|---|
-| `gnome` | Tap Super for Activities, Super+arrows to snap, Alt+Tab between windows, Alt+F4, Ctrl+Alt+arrows for desktops, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
+| `gnome` | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
 | `pc-keyboard` | Ctrl, Super and Alt where a PC keyboard has them, on the MacBook keyboard and on a PC keyboard in Mac mode | Anyone with a PC-layout keyboard |
 | `personal` | My apps, file associations, webcam fix, terminal, 70/30 snapping | Me. Read it as an example, or skip it |
 
@@ -25,8 +25,8 @@ Dotfiles live in chezmoi, which has a `~/.bashrc_macos` for macOS shell config.
 init.sh                      ./init.sh [--admin] [LAYER...]; safe to re-run
 gnome/
   Brewfile                   Hammerspoon, Karabiner-Elements, AltTab
-  defaults.sh                System Settings: desktops, tiling, Stage Manager (section 2 = candidates)
-  hammerspoon.lua            Super keys, Activities veto, Finder Delete
+  defaults.sh                System Settings: desktops, hot corner, tiling, screenshots (section 2 = candidates)
+  hammerspoon.lua            Super keys, tap-Super veto, screenshot clipboard, Finder Delete
   karabiner.json             tap-Super detection
   DefaultKeyBinding.dict     Home/End, Ctrl+arrows       → copied to ~/Library/KeyBindings/
 pc-keyboard/
@@ -34,7 +34,7 @@ pc-keyboard/
 personal/
   Brewfile  defaults.sh  hammerspoon.lua  karabiner.json
   duti.conf, fix-file-associations   which app opens which file type
-hammerspoon/init.lua         loads gnome.lua then personal.lua  → ~/.hammerspoon/
+hammerspoon/init.lua         settings (incl. what tapping Super does); loads gnome.lua then personal.lua  → ~/.hammerspoon/
 karabiner/build.sh           merges the layers' karabiner.json → ~/.config/karabiner/karabiner.json
 ```
 
@@ -108,6 +108,8 @@ themselves.
 2. AltTab:
    * shortcut on **Cmd+Tab** (physical Alt+Tab)
    * *Appearance → Apparition delay* **0**
+   * Alt+backtick already cycles the current app's windows: it's macOS's own Cmd+backtick. For a switcher with
+     thumbnails instead, set AltTab's second shortcut to hold **Cmd**, key **`**, showing the active app's windows.
 3. Notifications. Best done once everything is installed, and redone now and then:
    * Most apps: alert style *None*, but keep *Show in Notification Centre* and *Badge application icon*. Nothing pops
      up; everything waits in the list behind the clock, like GNOME.
@@ -153,15 +155,18 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 
 | Keys | Does | Layer | Provided by |
 |---|---|---|---|
-| Tap **Super** on its own | Activities (Mission Control) | gnome | Karabiner + Hammerspoon |
+| Tap **Super** on its own | Search (Spotlight); set `superTap = "overview"` in `hammerspoon/init.lua` for Mission Control | gnome | Karabiner + Hammerspoon |
+| Mouse to **top-left corner** | Mission Control | gnome | macOS hot corner (scripted) |
 | **Super + ← / →** | Snap window left / right (halves; 70/30 in personal) | gnome | Hammerspoon |
 | **Super + ↑ / ↓** | Maximise / restore | gnome | Hammerspoon |
+| **Super + H** | Minimise window | gnome | Hammerspoon |
 | **Super + Shift + ← / →** | Window to other display | gnome | Hammerspoon |
 | **Super + L** | Lock screen | gnome | Hammerspoon |
 | **Super + D** | Show desktop | gnome | Hammerspoon |
 | **Alt + F4** | Close window (Fn+Alt+F4 on a MacBook) | gnome | Hammerspoon |
 | **Alt + Tab** | Switch windows | gnome | AltTab |
-| **Ctrl + Alt + ← / →** | Previous / next desktop | gnome | macOS shortcut (scripted) |
+| **Alt + `** | Next window of this app | gnome | macOS (built in) |
+| **Ctrl + Alt + ← / →**, **Super + PgUp / PgDn** | Previous / next desktop | gnome | macOS shortcut (scripted); Hammerspoon forwards Super+PgUp/PgDn |
 | **Ctrl + Alt + ↑** | Mission Control | gnome | macOS shortcut (scripted) |
 | **Ctrl + Alt + ↓** | This app's windows | gnome | macOS shortcut (scripted) |
 | **Home / End** | Start / end of line | gnome | DefaultKeyBinding.dict |
@@ -169,6 +174,8 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 | **Ctrl + Backspace / Delete** | Delete word | gnome | DefaultKeyBinding.dict |
 | **Delete** (in Finder) | Move to Bin | gnome | Hammerspoon |
 | Drag window to screen edge / top | Half screen / fill | gnome | macOS tiling |
+| Double-click title bar | Maximise (Fill) | gnome | macOS (scripted) |
+| **Cmd + Shift + 3 / 4 / 5** | Screenshot to `~/Pictures/Screenshots` *and* the clipboard | gnome | macOS + Hammerspoon |
 | **Caps Lock** | Escape | personal | Karabiner |
 | **Ctrl + Space** | Drop-down terminal | personal | Tabby |
 | **Alt + .** (in Tabby) | Last argument | personal | Karabiner |
@@ -179,6 +186,16 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 
 ## Why some things are the way they are
 
+- **Tapping Super searches; the overview is on the top-left corner.** GNOME's Activities is a window overview and a
+  search box at once, and macOS splits them into Mission Control and Spotlight. GNOME also has the top-left hot corner,
+  so mouse users get the overview there and keyboard users get search on Super. Swap with `superTap` in
+  `hammerspoon/init.lua`.
+- **Screenshots: file and clipboard, no floating thumbnail.** macOS can save a screenshot or copy it, not both, so
+  Hammerspoon watches the Screenshots folder and copies each new file. With the thumbnail on, macOS only writes the
+  file once the thumbnail goes away, about 5 seconds later. The copy then lands late and overwrites anything copied in
+  the meantime (tested 2026-10-29).
+- **Super+PgUp/PgDn re-send Ctrl+Cmd+arrows.** macOS allows one shortcut per action. The synthetic key needs the fn
+  flag, because macOS stores arrow-key shortcuts with it.
 - **Super is Option, not Cmd.** It's the key in Super's position on both keyboards. Cmd stays Cmd because Cmd+C/V/X,
   Cmd+arrows and the rest are how every Mac app works; remapping it costs more than it saves.
 - **Tap-Super-for-Activities is split across Karabiner and Hammerspoon.** Karabiner spots the lone tap
@@ -272,8 +289,8 @@ uvc-util -V <vendor>:<product> -s power-line-frequency=1
 ## Candidates (not adopted yet)
 
 Section 2 of `gnome/defaults.sh` holds commented-out settings from common Linux-to-Mac complaints. Uncomment to adopt:
-fixed Spaces order, hot corner, Dock autohide, key repeat instead of the accent picker, smart quotes/autocorrect off,
-Finder (hidden files, extensions, path bar, search current folder), screenshot folder, Reduce Motion.
+Dock autohide, Ctrl+Cmd+drag to move windows, key repeat instead of the accent picker, smart quotes/autocorrect off,
+Finder (hidden files, extensions, path bar, search current folder), Reduce Motion.
 
 Other things worth knowing about:
 
@@ -289,4 +306,6 @@ Other things worth knowing about:
   haven't been checked on a fresh Mac. Do the before/after diff once and remove the marker.
 - Hammerspoon's Finder Delete tap received no key events at all on 2026-10-27 while other events arrived, which points
   at Input Monitoring. Check it actually works.
-- Super+L and Super+D take Option+L and Option+D, which type characters on Mac keyboard layouts.
+- Super+L, Super+D and Super+H take Option+L, Option+D and Option+H, which type characters on Mac keyboard layouts.
+- A full-screen screenshot (Cmd+Shift+3) with two displays makes one file per display, and the clipboard gets whichever
+  was written last. GNOME captures all displays as one image. Cmd+Shift+4 or 5 for one area doesn't have this problem.
