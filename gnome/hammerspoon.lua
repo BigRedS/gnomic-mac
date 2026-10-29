@@ -159,6 +159,27 @@ function M.start(settings)
   end):start()
 
   ---------------------------------------------------------------------------
+  -- Native full screen -> maximise (settings.fullscreen = "maximise").
+  -- macOS has no setting to turn native full screen off, so catch windows as
+  -- they enter it, take them back out, and maximise once the exit animation
+  -- has finished (maximising mid-animation is ignored).
+  ---------------------------------------------------------------------------
+  if settings.fullscreen == "maximise" then
+    M.pendingMaximise = {}
+    M.fullscreenFilter = hs.window.filter.new():subscribe(
+      hs.window.filter.windowFullscreened,
+      function(w)
+        if not w then return end
+        w:setFullScreen(false)
+        M.pendingMaximise[w:id()] = hs.timer.doAfter(1, function()
+          M.pendingMaximise[w:id()] = nil
+          w:maximize()
+        end)
+      end
+    )
+  end
+
+  ---------------------------------------------------------------------------
   -- Odds and ends
   ---------------------------------------------------------------------------
   hs.hotkey.bind(SUPER, "l", function() hs.caffeinate.lockScreen() end)

@@ -11,7 +11,7 @@ It's split into three layers, applied in order. Each works without the ones afte
 |---|---|---|
 | `gnome` | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops spanning all displays on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
 | `pc-keyboard` | Ctrl, Super and Alt where a PC keyboard has them, on the MacBook keyboard and on a PC keyboard in Mac mode | Anyone with a PC-layout keyboard |
-| `personal` | My apps, file associations, webcam fix, terminal, 70/30 snapping | Me. Read it as an example, or skip it |
+| `personal` | My apps, file associations, webcam fix, terminal, 70/30 snapping, no native full screen | Me. Read it as an example, or skip it |
 
 This is documentation as much as automation; partly to remind me what I like.
 
@@ -175,6 +175,7 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 | **Delete** (in Finder) | Move to Bin | gnome | Hammerspoon |
 | Drag window to screen edge / top | Half screen / fill | gnome | macOS tiling |
 | Double-click title bar | Maximise (Fill) | gnome | macOS (scripted) |
+| Green button, **Ctrl + Cmd + F** | Maximise, never native full screen | personal | Hammerspoon (`fullscreen` setting) |
 | **Cmd + Shift + 3 / 4 / 5** | Screenshot to `~/Pictures/Screenshots` *and* the clipboard | gnome | macOS + Hammerspoon |
 | **Caps Lock** | Escape | personal | Karabiner |
 | **Ctrl + Space** | Drop-down terminal | personal | Tabby |
@@ -196,6 +197,10 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
   the meantime (tested 2026-10-29).
 - **Super+PgUp/PgDn re-send Ctrl+Cmd+arrows.** macOS allows one shortcut per action. The synthetic key needs the fn
   flag, because macOS stores arrow-key shortcuts with it.
+- **Native full screen becomes maximise (personal).** macOS can't turn native full screen off, and with one desktop
+  spanning both displays it blanks the other screen. Hammerspoon takes any window that goes full screen straight back
+  out and maximises it once the exit animation ends. Video players can't go truly full screen either, which is why
+  the GNOME layer leaves it off: `fullscreen = "maximise"` in a later layer turns it on.
 - **Super is Option, not Cmd.** It's the key in Super's position on both keyboards. Cmd stays Cmd because Cmd+C/V/X,
   Cmd+arrows and the rest are how every Mac app works; remapping it costs more than it saves.
 - **Tap-Super-for-Activities is split across Karabiner and Hammerspoon.** Karabiner spots the lone tap
@@ -210,7 +215,7 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 - **One desktop spans both displays**, so switching moves every screen together ("Displays have separate Spaces" is
   off). Stock GNOME only switches the primary display and leaves the others put; macOS can't do that, so this is the
   nearer of the two it offers. The menu bar and Dock then only show on the main display, and full-screen apps blank
-  the other displays, so avoid full screen and maximise instead.
+  the other displays; the personal layer turns full screen into maximise for that reason.
 - **Desktop switching is on Ctrl+Alt+arrows**, not Ctrl+arrows (the macOS default). That frees Ctrl+arrows for word
   movement, as on Linux.
 - **Karabiner's config is generated.** Each layer has a `karabiner.json` fragment; `karabiner/build.sh` merges them

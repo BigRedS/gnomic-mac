@@ -19,6 +19,14 @@ local settings = {
   --              corner, as in GNOME (set in gnome/defaults.sh)
   --   "overview" Mission Control
   superTap = "search",
+  -- What happens when a window asks for macOS's native full screen (green
+  -- button, Ctrl+Cmd+F, an app's own menu):
+  --   "native"   leave it alone: the window gets its own desktop, and with
+  --              one desktop spanning all displays the others go blank
+  --   "maximise" undo it straight away and maximise instead, as GNOME's
+  --              full screen stays on the current desktop. Video players
+  --              then can't go truly full screen either.
+  fullscreen = "native",
   -- Must match the screenshot location in gnome/defaults.sh.
   screenshotDir = os.getenv("HOME") .. "/Pictures/Screenshots",
 }

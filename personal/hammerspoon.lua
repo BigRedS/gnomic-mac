@@ -6,6 +6,7 @@ local M = {}
 M.settings = {
   snapLeft = hs.layout.left70,
   snapRight = hs.layout.right30,
+  fullscreen = "maximise",
 }
 
 ---------------------------------------------------------------------------
