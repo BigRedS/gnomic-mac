@@ -8,6 +8,10 @@
 	<false/>
 	<key>HotkeyMigratedFromSingleToMulti</key>
 	<true/>
+	<key>NeverWarnAboutShortLivedSessions_B3A8EE5E-0C9A-4CD8-A93C-C7B96BC7117F</key>
+	<true/>
+	<key>NeverWarnAboutShortLivedSessions_B3A8EE5E-0C9A-4CD8-A93C-C7B96BC7117F_selection</key>
+	<integer>0</integer>
 	<key>New Bookmarks</key>
 	<array>
 		<dict>
@@ -2317,6 +2321,10 @@
 	<key>TabViewType</key>
 	<integer>1</integer>
 	<key>VisualIndicatorForEsc</key>
+	<false/>
+	<key>kCPKSelectionViewPreferredModeKey</key>
+	<integer>0</integer>
+	<key>kCPKSelectionViewShowHSBTextFieldsKey</key>
 	<false/>
 </dict>
 </plist>
