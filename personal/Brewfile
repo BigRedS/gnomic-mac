@@ -18,11 +18,9 @@ brew "chezmoi"
 brew "git"
 
 cask "iterm2"       # drop-down terminal on Ctrl+Space (hotkey window); settings in personal/iterm2/
-cask "tabby"        # previous drop-down terminal; remove once iTerm2 has stuck
 cask "coteditor"    # the "gedit": default for text/YAML/JSON
 cask "libreoffice"  # default for CSV
 cask "thunderbird"
-cask "betterdisplay" # HiDPI ("Retina") scaling on the 1440p monitors; that part needs a Pro licence
 # Not installed here:
 #   firefox: brew upgrading it underneath a running session forces a restart that loses work
 #   microsoft-teams, granola: MDM-managed on the work Mac
