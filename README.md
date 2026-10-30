@@ -1,21 +1,21 @@
 # mac-setup
 
-Make a Mac behave enough like GNOME that Debian/GNOME muscle memory works, with a PC keyboard.
+Make a Mac behave enough like Gnome that my Debian/Gnome muscle memory works.
 
-It doesn't make macOS look like GNOME. It makes the interactions less surprising: Super does what Super does, windows
-snap where you expect, text moves by word on Ctrl+arrows.
+This doesn't make macOS look like Gnome and it doesn't fix the cmd-c-vs-ctrl-c thing, but it makes Super behave like it does in Gnome, windows snap as you expect ctrl+arrows move the cursor as you expect.
 
-It's split into three layers, applied in order. Each works without the ones after it:
+It's split into three layers, because it's also got some of my personal preference in it and splitting it hopefully makes this useful for others:
 
-| Layer | What it does | Who it's for |
-|---|---|---|
-| `gnome` | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops spanning all displays on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
-| `pc-keyboard` | Ctrl, Super and Alt where a PC keyboard has them, on the MacBook keyboard and on a PC keyboard in Mac mode | Anyone with a PC-layout keyboard |
-| `personal` | My apps, file associations, webcam fix, terminal, 70/30 snapping, no native full screen | Me. Read it as an example, or skip it |
+| Layer        | What it does | Who it's for |
+|---           |---|---|
+| `gnome`      | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops spanning all displays on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
+| `pc-keyboard` | Ctrl, Super and Alt where a PC keyboard has them, on the MacBook keyboard and on a PC keyboard in Mac mode | Anyone with a (British) PC-layout keyboard |
+| `personal`    | My apps, file associations, webcam fix, terminal, 70/30 snapping, no native full screen | Me. Read it as an example, or skip it |
 
-This is documentation as much as automation; partly to remind me what I like.
+This is documentation as much as automation; partly to remind me what I like, much of this I found by being surprised and then trying to remember what keypress I'd just tried to do. There's a few circles in the git history as I wrongly-assumed my preferences and habits.
 
-Dotfiles live in chezmoi, which has a `~/.bashrc_macos` for macOS shell config.
+My dotfiles live in chezmoi; I use bash and have a  `~/.bashrc_macos` for macOS-specific shell config but I don't want to over-complicate that with all
+my mac-specific fixes..
 
 ---
 
@@ -39,7 +39,7 @@ karabiner/build.sh           merges the layers' karabiner.json → ~/.config/kar
 ```
 
 `~/.hammerspoon` is a real directory holding a symlink per layer. `~/.config/karabiner/karabiner.json` is generated.
-Change the repo, not those.
+Change the repo and re-run init, not those.
 
 ---
 
@@ -51,9 +51,9 @@ This needs permissions that are _normally_ available on corporate MacBooks at te
 * Hammerspoon: Accessibility and Input Monitoring
 * Karabiner-Elements: its driver extension (DriverKit) and Input Monitoring
 
-Hammerspoon and Karabiner are hard requirements. Without them it's probably easier to go the VM route.
+Hammerspoon and Karabiner are absolutely required
 
-macOS 15 or later ships `jq`, which the Karabiner build needs; on older versions `init.sh` installs it from Homebrew.
+Karabiner uses jq to assemble its config files, new macoses come with it, but init.sh will install it if it's not here.
 
 ### 1. Get the repo and run the script
 
@@ -68,13 +68,15 @@ cd ~/src/mac-setup
 ./init.sh --admin                 # personal layer: also make Homebrew's bash the login shell
 ```
 
-With the personal layer, chezmoi is now installed, so add the key to GitHub and set that up.
+With the personal layer done, chezmoi is now installed, so add the key to GitHub and set that up.
 
-A cask fails if the app was already installed by hand at a different version. Update or delete the app and re-run.
+A homebrew cask fails if the app was already installed by hand at a different version. Update or delete the app and re-run.
 
 ### 2. Permissions prompts
 
-There's a lot of clicking. `init.sh` launches each app to trigger its prompts, but just in case:
+There's a lot of clicking here, apple _loves_ a confirmation dialog.
+
+`init.sh` launches each app to trigger its prompts, but just in case these are what you need:
 
 **Privacy & Security**
 
@@ -92,12 +94,12 @@ Karabiner silently does nothing until all of these are done. Check *Karabiner-El
 errors, and that `Karabiner-EventViewer` logs key presses.
 
 If Karabiner was running before `init.sh` first set up `~/.config/karabiner`, it keeps watching the old location and
-ignores changes. Reboot, then check it's reading the new file (see [Checks](#checks)).
+ignores changes. Reboot (or maybe log out and back in again?), then check it's reading the new file (see [Checks](#checks)).
 
 Hammerspoon should start at login: tick *Launch Hammerspoon at login* in its preferences. Karabiner and AltTab add
 themselves.
 
-**Mic and camera** (personal): might as well do these _before_ trying to join a meeting. Firefox, Teams, Zoom, Granola.
+**Mic and camera** (personal): might as well do these _before_ trying to join a meeting. Firefox, Teams, Zoom, Granola, etc.
 
 ### 3. gnome: manual steps
 
@@ -108,11 +110,9 @@ themselves.
 2. AltTab:
    * shortcut on **Cmd+Tab** (physical Alt+Tab)
    * *Appearance → Apparition delay* **0**
-   * Alt+backtick already cycles the current app's windows: it's macOS's own Cmd+backtick. For a switcher with
-     thumbnails instead, set AltTab's second shortcut to hold **Cmd**, key **`**, showing the active app's windows.
+   * Alt+backtick goes through current app's windows, AltTab could be configured to intercept this and show a thumbnail picker using its 'second shortcut' feature, but doesn't currently.
 3. Notifications. Best done once everything is installed, and redone now and then:
-   * Most apps: alert style *None*, but keep *Show in Notification Centre* and *Badge application icon*. Nothing pops
-     up; everything waits in the list behind the clock, like GNOME.
+   * Most apps: alert style *None*, but keep *Show in Notification Centre* and *Badge application icon*. Have no annoying pop-ups, but things sit in th enotification list that you can drop-down
    * **Alerts** (stay until dismissed) only for things that must interrupt: calls and calendar reminders.
 
 ### 4. pc-keyboard: manual steps
@@ -131,19 +131,13 @@ What the layer does:
 | MacBook | fn/Globe | Left Control | Puts Ctrl bottom-left, where a PC has it. |
 | MacBook | Left Control | fn/Globe | Keeps fn reachable (fn+arrows = Home/End/PgUp/PgDn). |
 | Logitech | Right Option | Right Control | In Mac mode the right-hand Ctrl position sends Option. macOS can't tell left Option from right, so only Karabiner can fix this without breaking Super. |
-| All | | | Karabiner's virtual keyboard is set to ANSI, not ISO. Found by trial: that's what makes British PC come out right. |
+| All | | | Karabiner's virtual keyboard is set to ANSI, for some reason this is actually right, not ISO. Who knows why. |
 
 ### 5. personal: manual steps
 
-iTerm2 needs nothing: `personal/defaults.sh` points it at `personal/iterm2/`, which already has the drop-down set up.
-Grant it Accessibility if it asks. If Tabby is still installed, quit it and remove it from Login Items, or it keeps
-Ctrl+Space and iTerm2's drop-down never sees the key.
+iTerm2 needs no manual work, but grant it Accessibility if it asks.
 
-Teams has its own notification settings too. Trim them or you get duplicates.
-
-BetterDisplay: macOS on Apple Silicon won't offer HiDPI modes on sub-4K screens, so 1440p monitors render text at
-1x. BetterDisplay's flexible HiDPI scaling fixes that, but it's a Pro feature (one-off licence, 14-day trial), and the
-free tier is for non-business use only. Settings are made per display in its menu-bar app.
+Teams has its own notification settings too. There is no way to set rules here in MacOS, you just have to keep on top of the notifications settings.
 
 ### 6. Finish
 
@@ -154,14 +148,17 @@ Log out and back in (keyboard shortcuts and key bindings fully apply after a fre
 
 ## Keys at a glance
 
-**Super is the key next to Ctrl**: Option on the MacBook, Start on a PC keyboard in Mac mode. **Alt is the key next to
-the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4 and the terminal.
+This doesn't try to break the cmd-c/cmd-v macos expectations, just the other things I tend to forget are different in macos.
+
+Super is the windows key, option on the Macbook. It's the one next to Ctrl.
+
+Alt is the key next to the space bar, the cmd on the Macbook. It's overridden specially for alt+tab.
 
 | Keys | Does | Layer | Provided by |
 |---|---|---|---|
 | Tap **Super** on its own | Search (Spotlight); set `superTap = "overview"` in `hammerspoon/init.lua` for Mission Control | gnome | Karabiner + Hammerspoon |
 | Mouse to **top-left corner** | Mission Control | gnome | macOS hot corner (scripted) |
-| **Super + ← / →** | Snap window left / right (halves; 70/30 in personal) | gnome | Hammerspoon |
+| **Super + ← / →** | Snap window left / right (halves by default; 70/30 in personal) | gnome | Hammerspoon |
 | **Super + ↑ / ↓** | Maximise / restore | gnome | Hammerspoon |
 | **Super + H** | Minimise window | gnome | Hammerspoon |
 | **Super + Shift + ← / →** | Window to other display | gnome | Hammerspoon |
@@ -190,48 +187,43 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 ---
 
 ## Why some things are the way they are
+- **Tap Super to search** In gnome tapping super gets you an overview with a search box, but they're different things in macos.
+  When I tap super in gnome it's to search-for-and-run a thing, so this triggers Spotlight with that, not the overview.
+  The overview is triggered by the hot corners, which is what I do in Gnome for that anyway.
 
-- **Tapping Super searches; the overview is on the top-left corner.** GNOME's Activities is a window overview and a
-  search box at once, and macOS splits them into Mission Control and Spotlight. GNOME also has the top-left hot corner,
-  so mouse users get the overview there and keyboard users get search on Super. Swap with `superTap` in
-  `hammerspoon/init.lua`.
-- **Screenshots: file and clipboard, no floating thumbnail.** macOS can save a screenshot or copy it, not both, so
-  Hammerspoon watches the Screenshots folder and copies each new file. With the thumbnail on, macOS only writes the
-  file once the thumbnail goes away, about 5 seconds later. The copy then lands late and overwrites anything copied in
-  the meantime (tested 2026-10-29).
-- **Super+PgUp/PgDn re-send Ctrl+Cmd+arrows.** macOS allows one shortcut per action. The synthetic key needs the fn
-  flag, because macOS stores arrow-key shortcuts with it.
-- **Native full screen becomes maximise (personal).** macOS can't turn native full screen off, and with one desktop
-  spanning both displays it blanks the other screen. Hammerspoon takes any window that goes full screen straight back
-  out and maximises it once the exit animation ends. Video players can't go truly full screen either, which is why
-  the GNOME layer leaves it off: `fullscreen = "maximise"` in a later layer turns it on.
-- **Super is Option, not Cmd.** It's the key in Super's position on both keyboards. Cmd stays Cmd because Cmd+C/V/X,
-  Cmd+arrows and the rest are how every Mac app works; remapping it costs more than it saves.
-- **Tap-Super-for-Activities is split across Karabiner and Hammerspoon.** Karabiner spots the lone tap
-  (`to_if_alone` → F19) because it sits under everything: it sees keys that AltTab swallows before Hammerspoon's
-  eventtap gets them, and it never mistakes its own synthetic modifier releases for real ones. Hammerspoon binds F19
-  and vetoes it if the mouse was used while Super was held, because Karabiner can't see the trackpad. Doing it all in
-  one layer gives phantom Activities either on fast Alt+Tab / Tabby's Alt+. or on Super+click. Before Super moved to
-  Option, the tap was on Cmd, which is where those collisions came from.
-- **macOS's own tiling *shortcuts* are off** (drag-to-snap stays on). Arrow keys carry a hidden fn flag, so the
+- **Screenshots to file and straight-to-clipboard** the only way to do this seemed to be to write the file then to immediately
+  copy it. If Macos shows a thumbnail of the screenshot it only writes the file once the thumbnail goes away, so the thumbnail
+  is also disabled here.
+
+- **MacOS' weird full-screen becomes a normal maximise** not-entirely-reliably; Hammerspoon is configured to notice a window
+  going into full-screen and put it back to maximised which it does reliably-enough but not 100% reliably. This also breaks
+  full-screen video in Firefox, for example, so is hidden in my personal layer
+
+- **Super is Option, not Cmd.** It's the key in Super's position on both keyboards, which is different to other goes at this I looked at.
+  Cmd stays Cmd because Cmd+C/V/X, Cmd+arrows and the rest are how every Mac app works and I found trying to change that even more confusing than not.
+
+- **Super+PgUp/PgDn re-send Ctrl+Cmd+arrows.** MacOS only allows one keyboard-shortcut per action, so to have two keyboard shortcuts
+  for 'move to the next desktop' Hammerspoon notices Super+PgUp and sends Ctrl+Cmd+arrow to the OS.
+
+- **macOS's own tiling *shortcuts* are disabled** but drag-to-snap stays on; arrow keys carry a hidden fn flag, so the
   Globe+Ctrl+arrow tiling shortcuts also fired on plain Ctrl+arrows from external keyboards, moving windows instead of
   the cursor. `gnome/defaults.sh` disables those 18 shortcuts.
-- **One desktop spans both displays**, so switching moves every screen together ("Displays have separate Spaces" is
-  off). Stock GNOME only switches the primary display and leaves the others put; macOS can't do that, so this is the
-  nearer of the two it offers. The menu bar and Dock then only show on the main display, and full-screen apps blank
-  the other displays; the personal layer turns full screen into maximise for that reason.
-- **Desktop switching is on Ctrl+Alt+arrows**, not Ctrl+arrows (the macOS default). That frees Ctrl+arrows for word
-  movement, as on Linux.
-- **Karabiner's config is generated.** Each layer has a `karabiner.json` fragment; `karabiner/build.sh` merges them
-  into the selected profile and leaves Karabiner's other settings alone. Remaps changed in Karabiner's GUI get
-  overwritten on the next run. Fragments can carry `_comment` keys, which the build strips.
-- **Complex rules from later layers go first** in the generated config. Karabiner uses the first rule that matches, so
+
+- **One desktop across both displays**, Displays have separate Spaces is off, This is how my laptop behaves; I think Gnome moves just
+  the primary one by default and honestly I'm not sure why my laptop is diferent.
+
+- **Desktop switching is on Ctrl+Alt+arrows**, not Ctrl+arrows (the macOS default), since those are for moving the cursor
+whole-words at a time. And ctrl+alt+arrow is a mapping I think I'm used to from Gnome 2.x days?
+
+- **Karabiner's config is generated.** Each layer has a `karabiner.json`and `karabiner/build.sh` merges them
+  into the appropriate profile and leaves Karabiner's other settings be. Changes made in Karabiner's GUI get
+  overwritten. The config can have `_comment` keys, which the build strips
+
+**Complex rules from later layers go first** in the generated config. Karabiner uses the first rule that matches, so
   a later layer can override an earlier one.
 - **`~/.config/karabiner` is a real directory**, not a link into the repo. Karabiner saves by replacing
-  `karabiner.json` and writes backups next to it; neither belongs in git.
+  `karabiner.json` and writes backups next to it and these get messy in a git repo.
 - **`DefaultKeyBinding.dict` is copied, not symlinked**, because some sandboxed apps won't follow a symlink there.
-- **The keyboard shortcut values in `defaults.sh` were captured, not guessed:** set it once in System Settings, then
-  `defaults read` before and after and `diff`. See [Scripting another setting](#scripting-another-setting).
 
 ---
 
@@ -239,25 +231,22 @@ the space bar**: Cmd on both, keeping its Mac meaning apart from Alt+Tab, Alt+F4
 
 ### Default apps (duti)
 
-Finder's *Change All…* is forever being overridden by apps, so `init.sh` runs `fix-file-associations`, which points
-file types at the apps in `personal/duti.conf`. duti is really prompt-happy (every change needs a confirmation), so
-the script only applies the entries that have drifted.
+Finder's *Change All…* dialog for setting default apps is forever being overridden by apps (Cursor wants to be the default for CSVs?),
+so `init.sh` runs `fix-file-associations`, which points file types at the apps in `personal/duti.conf`. duti is really prompt-happy (every change needs a confirmation), so the script only applies the entries that have changed.
 
 ### iTerm2: Quake-style drop-down terminal
 
-iTerm2's "hotkey window" is a profile, *Hotkey Window*, in `personal/iterm2/com.googlecode.iterm2.plist`: Ctrl+Space,
-attached to the top edge, 40% of the height and full width, on the display with the mouse pointer, on every desktop,
-and it stays put when something else gets focus. Tabs are along the bottom (a global setting, not per profile).
+I like Guake and now DDTerm under Gnome. This drops down from the current-display at full-width and 40% of height, triggered with ctrl-space.
+Outside of that I tend to configure colours and sizes and whatnot on-the-fly by mouse.
 
-iTerm2 loads that file at launch and saves changes made in its settings window straight back to it, so fonts and
-colour schemes can be fiddled with the mouse and still end up in git. The file also picks up incidental state, so expect
-noisy diffs: commit it now and then rather than tracking every tweak. For automatic light/dark switching, tick
-*Profiles → Colors → Use separate colors for light and dark mode*.
+This repo writes a `personal/iterm2/com.googlecode.iterm2.plist` which iTerm will edit, so it's easy enough to make mouse-driven
+edits automatic, but also that file will change a lot.
 
-Getting Alt to work as Meta in the shell needs care: physical Alt sends Cmd, and every terminal's own Meta setting
-works on Option instead. A Karabiner rule in `personal/karabiner.json` turns Alt+`.`/`b`/`f`/`d`/Backspace into
-Escape-then-key, only when iTerm2 or Tabby is frontmost. `osascript -e 'id of app "iTerm"'` should print
-`com.googlecode.iterm2`.
+Getting alt to work as meta (so alt+dot works for the last arg to the previous command) is the problem that triggered this whole repo.
+The alt key itself sends Cmd for some reason, but every terminal expcts it to send Option. Karabiner then turns Alt+`.`/`b`/`f`/`d`/Backspace into
+Escape-then-key, only when iTerm2 or Tabby is frontmost (I used tabby for a bit when I was annoyed with iTerm2).
+
+To find more aps to add to this rule, use osascript - `osascript -e 'id of app "iTerm"'` prints `com.googlecode.iterm2` which is what goes in the karabiner config.
 
 ### Bash
 
@@ -272,8 +261,10 @@ tools are installed under their `g*` names (`gsed`, `gdate`, `gfind`…) and ali
 UK mains lighting makes webcams flicker unless they're set to 50Hz. The C920 defaults to 60Hz and forgets the setting
 every time the dock is unplugged, so `personal/hammerspoon.lua` sets it whenever the camera connects.
 
-`init.sh` clones [uvc-util](https://github.com/jtfrey/uvc-util) into `~/opt/uvc-util`, builds it, and links
-`~/bin/uvc-util`; it isn't in Homebrew. Query and set the setting by hand with (1 = 50Hz, 2 = 60Hz):
+[uvc-util](https://github.com/jtfrey/uvc-util) isn't in homebrew so `init.sh` clones it into `~/opt/`, builds it, and
+links to it from `~/bin`.
+
+Query and set the setting by hand with 1 = 50Hz, 2 = 60Hz:
 
 ```
 uvc-util -V <vendor>:<product> -S power-line-frequency
@@ -284,20 +275,21 @@ uvc-util -V <vendor>:<product> -s power-line-frequency=1
 
 ## Checks
 
-- **Hammerspoon console** (menu-bar icon → Console):
-  `print(require("gnome").superMouseWatcher:isEnabled(), hs.eventtap.isSecureInputEnabled(), hs.accessibilityState())`
-  → `true false true`.
-  - First `false` → permissions; quit and relaunch Hammerspoon.
-  - Second `true` → something is holding Secure Input (password field, a terminal's "Secure Keyboard Entry",
-    1Password).
-- **"RegisterEventHotKey failed: -9878"** in the console → another app or a macOS shortcut already owns that key. Free
-  it, then *Reload Config* (Hammerspoon only claims keys at load time).
-- **Karabiner-EventViewer** shows what each physical key really sends; the first thing to check when a remap
-  misbehaves. Simple modifications apply before complex rules.
-- **Karabiner picked up a change?** `tail /var/log/karabiner/core_service.log` shows a `Load …karabiner.json` line.
-- **A keyboard shortcut's stored value:**
-  `plutil -extract AppleSymbolicHotKeys.79 xml1 -o - ~/Library/Preferences/com.apple.symbolichotkeys.plist`
-- **Which app owns a file type:** `duti -x yaml`.
+"Why is hammerspoon not working" check:
+* Open the Hammerspoon console (menu-bar icon -> Console) and enter `print(require("gnome").superMouseWatcher:isEnabled(), hs.eventtap.isSecureInputEnabled(), hs.accessibilityState())`:
+* Expect: `true false true`.
+* First `false`: permissions; quit and relaunch Hammerspoon.
+* Second `true`: something is holding Secure Input (password field, a terminal's "Secure Keyboard Entry", etc.)
+
+"RegisterEventHotKey failed: -9878" in the Hammerspoon console:
+* another app or a macOS shortcut is already configured to use that key or key-combo. Free it, then do Hammerspoon's *Reload Config*
+
+Karabiner-EventViewer shows what each physical key really sends, handy to check when a remap misbehaves. Simple modifications apply before complex rules.
+- `tail /var/log/karabiner/core_service.log` shows a `Load …karabiner.json` line whenever it notices a change to the config
+- `plutil -extract AppleSymbolicHotKeys.79 xml1 -o - ~/Library/Preferences/com.apple.symbolichotkeys.plist` gets the current value for a keyboard shortcut
+
+Duti managed file associations
+* `duti -x <extension>` prints the current association for a given extension
 
 ## Scripting another setting
 
@@ -329,11 +321,6 @@ Other things worth knowing about:
 - Hammerspoon's Finder Delete tap received no key events at all on 2026-10-27 while other events arrived, which points
   at Input Monitoring. Check it actually works.
 - Super+L, Super+D and Super+H take Option+L, Option+D and Option+H, which type characters on Mac keyboard layouts.
-- The full-screen-to-maximise catcher (`fullscreen = "maximise"`) works the first time but not reliably after that.
-  Seen on 2026-10-29: a second green-button click stayed in full screen, and in a scripted test a second cycle left
-  the window 30px tall. Likely causes: it trusts `hs.window.filter`'s change detection, which only compares
-  full-screen state after a 0.5s settle and can keep a stale "full screen" record, and it maximises on a fixed 1s
-  timer rather than once the exit has finished. Fix by checking `isFullScreen()` on every move/resize, and
-  maximising only after the window reports it's out and has stopped resizing; test several cycles in a row.
+- The full-screen-to-maximise catcher (`fullscreen = "maximise"`) works the first time but not reliably after that. See f39303d
 - A full-screen screenshot (Cmd+Shift+3) with two displays makes one file per display, and the clipboard gets whichever
   was written last. GNOME captures all displays as one image. Cmd+Shift+4 or 5 for one area doesn't have this problem.
