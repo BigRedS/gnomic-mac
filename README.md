@@ -1,4 +1,4 @@
-# mac-setup
+# gnomic-mac
 
 Make a Mac behave enough like Gnome that my Debian/Gnome muscle memory works.
 
@@ -152,7 +152,7 @@ This doesn't try to break the cmd-c/cmd-v macos expectations, just the other thi
 
 Super is the windows key, option on the Macbook. It's the one next to Ctrl.
 
-Alt is the key next to the space bar, the cmd on the Macbook. It's overridden specially for alt+tab.
+Alt is the key next to the space bar, the cmd on the Macbook. It's overridden for a few of these (alt+., alt+f4, alt+backtick)
 
 | Keys | Does | Layer | Provided by |
 |---|---|---|---|
