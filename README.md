@@ -114,6 +114,9 @@ themselves.
 3. Notifications. Best done once everything is installed, and redone now and then:
    * Most apps: alert style *None*, but keep *Show in Notification Centre* and *Badge application icon*. Have no annoying pop-ups, but things sit in th enotification list that you can drop-down
    * **Alerts** (stay until dismissed) only for things that must interrupt: calls and calendar reminders.
+4. Hammerspoon:
+   * Enable *Launch Hammerspoon at login*
+
 
 ### 4. pc-keyboard: manual steps
 
