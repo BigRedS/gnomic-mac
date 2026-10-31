@@ -16,6 +16,7 @@ brew "duti"
 # Dotfiles
 brew "chezmoi"
 brew "git"
+brew "tmux"
 
 cask "iterm2"       # drop-down terminal on Ctrl+Space (hotkey window); settings in personal/iterm2/
 cask "coteditor"    # the "gedit": default for text/YAML/JSON
