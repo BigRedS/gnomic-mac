@@ -2,3 +2,4 @@
 cask "hammerspoon"         # window keys, tap-Super veto, Finder Delete key
 cask "karabiner-elements"  # tap-Super detection; also needed by pc-keyboard
 cask "alt-tab"             # Alt+Tab switches windows, not apps
+cask "rectangle"           # double-click title bar to maximise, drag-to-edge snapping

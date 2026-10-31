@@ -251,7 +251,7 @@ fi
 step "Start the apps that need permissions"
 ###############################################################################
 
-apps=(Hammerspoon Karabiner-Elements AltTab)
+apps=(Hammerspoon Karabiner-Elements AltTab Rectangle)
 if has_layer personal; then apps+=(iTerm); fi
 for app in "${apps[@]}"; do
   if open -ga "$app" 2>/dev/null; then ok "$app launched"

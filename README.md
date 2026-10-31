@@ -24,8 +24,8 @@ my mac-specific fixes..
 ```
 init.sh                      ./init.sh [--admin] [LAYER...]; safe to re-run
 gnome/
-  Brewfile                   Hammerspoon, Karabiner-Elements, AltTab
-  defaults.sh                System Settings: desktops, hot corner, tiling, screenshots (section 2 = candidates)
+  Brewfile                   Hammerspoon, Karabiner-Elements, AltTab, Rectangle
+  defaults.sh                System Settings: desktops, hot corner, Rectangle, screenshots (section 2 = candidates)
   hammerspoon.lua            Super keys, tap-Super veto, screenshot clipboard, Finder Delete
   karabiner.json             tap-Super detection
   DefaultKeyBinding.dict     Home/End, Ctrl+arrows       → copied to ~/Library/KeyBindings/
@@ -81,6 +81,7 @@ There's a lot of clicking here, apple _loves_ a confirmation dialog.
 **Privacy & Security**
 
 * *Accessibility*: Hammerspoon, for the window keys.
+* *Accessibility*: Rectangle, for title-bar double-click and drag-to-edge snapping.
 * *Input Monitoring*: Hammerspoon, for the Activities veto and the Finder Delete key.
 * *Input Monitoring*: `karabiner_grabber` and `karabiner_observer` (might show as `Karabiner-Core-Service`).
 * *Screen Recording*: AltTab, for window thumbnails.
@@ -103,10 +104,10 @@ themselves.
 
 ### 3. gnome: manual steps
 
-1. *System Settings → Desktop & Dock → Windows*. `defaults.sh` sets these, but they're marked VERIFY, so check:
-   * *Drag windows to screen edges to tile* **on**
-   * *Drag windows to menu bar to fill screen* **on**
-   * *Tiled windows have margins* **off**
+1. Rectangle (there's no `defaults` key for either of these):
+   * It may prompt saying it conflicts with macos tiling; in this case disable it in macos. The scripts attempt to do that first anyway.
+   * It will prompt to pick a Shortcut Set, pick either and then delete them all, hammerspoon will deal with keyboard shortcuts here.
+   * Enable *Launch on login*
 2. AltTab:
    * shortcut on **Cmd+Tab** (physical Alt+Tab)
    * *Appearance → Apparition delay* **0**
@@ -177,8 +178,8 @@ Alt is the key next to the space bar, the cmd on the Macbook. It's overridden fo
 | **Ctrl + ← / →** | Previous / next word | gnome | DefaultKeyBinding.dict |
 | **Ctrl + Backspace / Delete** | Delete word | gnome | DefaultKeyBinding.dict |
 | **Delete** (in Finder) | Move to Bin | gnome | Hammerspoon |
-| Drag window to screen edge / top | Half screen / fill | gnome | macOS tiling |
-| Double-click title bar | Maximise (Fill) | gnome | macOS (scripted) |
+| Drag window to left / right edge | Half screen | gnome | Rectangle |
+| Double-click title bar | Maximise | gnome | Rectangle |
 | Green button, **Ctrl + Cmd + F** | Maximise, never native full screen | personal | Hammerspoon (`fullscreen` setting) |
 | **Cmd + Shift + 3 / 4 / 5** | Screenshot to `~/Pictures/Screenshots` *and* the clipboard | gnome | macOS + Hammerspoon |
 | **Caps Lock** | Escape | personal | Karabiner |
@@ -208,12 +209,13 @@ Alt is the key next to the space bar, the cmd on the Macbook. It's overridden fo
 - **Super+PgUp/PgDn re-send Ctrl+Cmd+arrows.** MacOS only allows one keyboard-shortcut per action, so to have two keyboard shortcuts
   for 'move to the next desktop' Hammerspoon notices Super+PgUp and sends Ctrl+Cmd+arrow to the OS.
 
-- **macOS's own tiling *shortcuts* are disabled** but drag-to-snap stays on; arrow keys carry a hidden fn flag, so the
+- **macOS's own tiling *shortcuts* are disabled**; arrow keys send a hidden fn flag, so the
   Globe+Ctrl+arrow tiling shortcuts also fired on plain Ctrl+arrows from external keyboards, moving windows instead of
   the cursor. `gnome/defaults.sh` disables those 18 shortcuts.
 
 - **One desktop across both displays**, Displays have separate Spaces is off, This is how my laptop behaves; I think Gnome moves just
-  the primary one by default and honestly I'm not sure why my laptop is diferent.
+  the primary one by default and honestly I'm not sure why my laptop is different. This switches off macOS's built-in
+  window tiling entirely as a side-effect so we use Rectangle for those.
 
 - **Desktop switching is on Ctrl+Alt+arrows**, not Ctrl+arrows (the macOS default), since those are for moving the cursor
 whole-words at a time. And ctrl+alt+arrow is a mapping I think I'm used to from Gnome 2.x days?
@@ -319,7 +321,7 @@ Other things worth knowing about:
 
 ## Loose ends
 
-- Settings marked `VERIFY` in `gnome/defaults.sh` and `personal/defaults.sh` (built-in tiling, freeing Ctrl+Space)
+- Settings marked `VERIFY` in `gnome/defaults.sh` and `personal/defaults.sh` (freeing Ctrl+Space)
   haven't been checked on a fresh Mac. Do the before/after diff once and remove the marker.
 - Hammerspoon's Finder Delete tap received no key events at all on 2026-10-27 while other events arrived, which points
   at Input Monitoring. Check it actually works.

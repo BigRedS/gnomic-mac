@@ -19,10 +19,20 @@ defaults write com.apple.WindowManager EnableStandardClickToShowDesktop -bool fa
 # Stage Manager off
 defaults write com.apple.WindowManager GloballyEnabled -bool false
 
-# Built-in drag-to-snap tiling (replaces Rectangle's drag behaviour)          # VERIFY
-defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool true
-defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool true
-defaults write com.apple.WindowManager EnableTiledWindowMargins -bool false
+# Rectangle does drag-to-edge snapping and title-bar double-click, not macOS:
+# macOS's own tiling (drag to edge, Window → Fill, double-click → Fill) is
+# switched off entirely while spans-displays is true (below), with the menu
+# items greyed out. Rectangle's keyboard shortcuts are cleared by hand
+# (README); Hammerspoon owns the keys.
+# macOS's edge-drag tiling is turned off too, even though it's already dead:
+# Rectangle sees these keys set and nags about a conflict on launch.
+defaults write com.apple.WindowManager EnableTilingByEdgeDrag -bool false
+defaults write com.apple.WindowManager EnableTopTilingByEdgeDrag -bool false
+# doubleClickTitleBar is Rectangle's action ID + 1; maximize is 2.
+defaults write com.knollsoft.Rectangle doubleClickTitleBar -int 3
+# Top edge ignored (bit 0): dragging there shows the Spaces bar instead, and
+# double-click or Super+Up already maximise.
+defaults write com.knollsoft.Rectangle ignoredSnapAreas -int 1
 
 # Expanded save dialogs (so you can see where things go)
 defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
@@ -69,8 +79,9 @@ defaults write com.apple.spaces spans-displays -bool true
 defaults write com.apple.dock wvous-tl-corner -int 2
 defaults write com.apple.dock wvous-tl-modifier -int 0
 
-# Double-click a title bar → Fill (maximise), as in GNOME.   (verified: value set via System Settings)
-defaults write -g AppleActionOnDoubleClick -string "Fill"
+# Double-click a title bar → nothing from macOS; Rectangle maximises instead
+# (above). "None" so the two don't both act if macOS tiling ever comes back.
+defaults write -g AppleActionOnDoubleClick -string "None"
 
 # Screenshots saved to ~/Pictures/Screenshots, as in GNOME; Hammerspoon also
 # copies each one to the clipboard (gnome/hammerspoon.lua). The floating
