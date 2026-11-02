@@ -72,23 +72,35 @@ function M.start(settings)
   ---------------------------------------------------------------------------
   local savedFrames = {}
 
+  -- Windows of apps in settings.noSnapApps ignore these keys entirely.
+  local function withSnappableWindow(fn)
+    return withWindow(function(w)
+      local app = w:application()
+      local id = app and app:bundleID()
+      for _, skip in ipairs(settings.noSnapApps) do
+        if id == skip then return end
+      end
+      fn(w)
+    end)
+  end
+
   local function remember(w)
     if not savedFrames[w:id()] then savedFrames[w:id()] = w:frame() end
   end
 
-  hs.hotkey.bind(SUPER, "left", withWindow(function(w)
+  hs.hotkey.bind(SUPER, "left", withSnappableWindow(function(w)
     remember(w); w:moveToUnit(settings.snapLeft)
   end))
 
-  hs.hotkey.bind(SUPER, "right", withWindow(function(w)
+  hs.hotkey.bind(SUPER, "right", withSnappableWindow(function(w)
     remember(w); w:moveToUnit(settings.snapRight)
   end))
 
-  hs.hotkey.bind(SUPER, "up", withWindow(function(w)
+  hs.hotkey.bind(SUPER, "up", withSnappableWindow(function(w)
     remember(w); w:maximize()
   end))
 
-  hs.hotkey.bind(SUPER, "down", withWindow(function(w)
+  hs.hotkey.bind(SUPER, "down", withSnappableWindow(function(w)
     local f = savedFrames[w:id()]
     if f then
       w:setFrame(f)
@@ -102,11 +114,11 @@ function M.start(settings)
   -- GNOME's Super+H hides the window; minimise is the Mac equivalent.
   hs.hotkey.bind(SUPER, "h", withWindow(function(w) w:minimize() end))
 
-  hs.hotkey.bind(SUPER_SHIFT, "left", withWindow(function(w)
+  hs.hotkey.bind(SUPER_SHIFT, "left", withSnappableWindow(function(w)
     w:moveOneScreenWest(false, true)
   end))
 
-  hs.hotkey.bind(SUPER_SHIFT, "right", withWindow(function(w)
+  hs.hotkey.bind(SUPER_SHIFT, "right", withSnappableWindow(function(w)
     w:moveOneScreenEast(false, true)
   end))
 

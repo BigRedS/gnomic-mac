@@ -13,6 +13,8 @@ local settings = {
   -- GNOME snaps windows to halves.
   snapLeft = hs.layout.left50,
   snapRight = hs.layout.right50,
+  -- Bundle IDs whose windows Super(+Shift)+arrows leave alone.
+  noSnapApps = {},
   -- What tapping Super alone does. GNOME's Activities is two things at once,
   -- a window overview and a search box, and macOS splits them:
   --   "search"   Spotlight (Cmd+Space); the overview is on the top-left hot
