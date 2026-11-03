@@ -185,6 +185,7 @@ Alt is the key next to the space bar, the cmd on the Macbook. It's overridden fo
 | **Caps Lock** | Escape | personal | Karabiner |
 | **Ctrl + Space** | Drop-down terminal | personal | iTerm2 hotkey window |
 | **Alt + .** (in iTerm2 or Tabby) | Last argument | personal | Karabiner |
+| **Ctrl + W** (outside iTerm2 and Tabby) | Delete previous word, not close the window | personal | Karabiner |
 
 `DefaultKeyBinding.dict` only affects native Mac apps. Electron apps (Teams, Slack, VS Code) ignore it.
 

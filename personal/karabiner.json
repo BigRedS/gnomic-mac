@@ -145,6 +145,39 @@
           "type": "basic"
         }
       ]
+    },
+    {
+      "description": "Ctrl+W replaced with an explicit delete-previous-word (opt+backspace) everywhere except terminals, which get a real Ctrl+W. Stop electron apps doing their 'close tab' thing",
+      "manipulators": [
+        {
+          "conditions": [
+            {
+              "bundle_identifiers": [
+                "^org\\.tabby$",
+                "^com\\.googlecode\\.iterm2$"
+              ],
+              "type": "frontmost_application_unless"
+            }
+          ],
+          "from": {
+            "key_code": "w",
+            "modifiers": {
+              "mandatory": [
+                "control"
+              ]
+            }
+          },
+          "to": [
+            {
+              "key_code": "delete_or_backspace",
+              "modifiers": [
+                "option"
+              ]
+            }
+          ],
+          "type": "basic"
+        }
+      ]
     }
   ],
   "simple_modifications": [
