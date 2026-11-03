@@ -4,8 +4,6 @@ local M = {}
 
 -- Overrides for the GNOME layer's defaults. Wide left window, narrow right.
 M.settings = {
-  snapLeft = hs.layout.left70,
-  snapRight = hs.layout.right30,
   fullscreen = "maximise",
   -- The drop-down terminal is never tiled, and Super+arrow there is usually
   -- a missed Ctrl+arrow.
