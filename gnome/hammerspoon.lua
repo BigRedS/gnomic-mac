@@ -65,7 +65,9 @@ function M.start(settings)
 
   ---------------------------------------------------------------------------
   -- Window snapping
-  --   Super+Left/Right        snap to a side
+  --   Super+Left/Right        snap to a side (split ratio: see splitFor)
+  --   Super+Up+Left/Right     top-left / top-right quarter (either press order)
+  --   Super+Down+Left/Right   bottom-left / bottom-right quarter
   --   Super+Up                maximise
   --   Super+Down              restore previous size (or un-maximise)
   --   Super+Shift+Left/Right  move window to the next display
@@ -88,19 +90,33 @@ function M.start(settings)
     if not savedFrames[w:id()] then savedFrames[w:id()] = w:frame() end
   end
 
-  hs.hotkey.bind(SUPER, "left", withSnappableWindow(function(w)
-    remember(w); w:moveToUnit(settings.snapLeft)
-  end))
+  -- Width of the left window, as a fraction of the screen: the built-in
+  -- display and external ones can differ.
+  local function splitFor(w)
+    local name = w:screen():name() or ""
+    if name:find("Built-in", 1, true) then return settings.splitInternal end
+    return settings.splitExternal
+  end
 
-  hs.hotkey.bind(SUPER, "right", withSnappableWindow(function(w)
-    remember(w); w:moveToUnit(settings.snapRight)
-  end))
+  local function snapTo(w, left, top)
+    remember(w)
+    local s = splitFor(w)
+    local x, width = 0, s
+    if not left then x, width = s, 1 - s end
+    w:moveToUnit({ x, top and 0 or 0.5, width, 0.5 })
+  end
 
-  hs.hotkey.bind(SUPER, "up", withSnappableWindow(function(w)
+  local function snapSide(w, left)
+    remember(w)
+    local s = splitFor(w)
+    if left then w:moveToUnit({ 0, 0, s, 1 }) else w:moveToUnit({ s, 0, 1 - s, 1 }) end
+  end
+
+  local function maximise(w)
     remember(w); w:maximize()
-  end))
+  end
 
-  hs.hotkey.bind(SUPER, "down", withSnappableWindow(function(w)
+  local function restore(w)
     local f = savedFrames[w:id()]
     if f then
       w:setFrame(f)
@@ -109,7 +125,56 @@ function M.start(settings)
       -- Nothing saved: shrink to a centred 60% window, like GNOME's unmaximise.
       w:moveToUnit({ 0.2, 0.15, 0.6, 0.7 })
     end
-  end))
+  end
+
+  -- An eventtap rather than hs.hotkey, because a hotkey is one key plus
+  -- modifiers and a corner is two arrows held together. Each arrow acts as
+  -- soon as it goes down, so Super+Up then Left briefly maximises before the
+  -- corner: waiting to see if a second arrow follows would delay every plain
+  -- Super+arrow. Super+Shift+arrow doesn't match (flags below) and is left to
+  -- the display-move hotkeys.
+  local held = {}   -- arrow names currently down while Super is held
+  local keys = hs.keycodes.map
+  local arrowName = { [keys.left] = "left", [keys.right] = "right", [keys.up] = "up", [keys.down] = "down" }
+
+  M.snapTap = hs.eventtap.new(
+    { types.keyDown, types.keyUp, types.flagsChanged },
+    function(e)
+      local t = e:getType()
+      local f = e:getFlags()
+
+      -- Forget held arrows when Super goes up, in case a key-up was missed
+      -- (e.g. focus moved to a password field mid-press).
+      if t == types.flagsChanged then
+        if not f.alt then held = {} end
+        return false
+      end
+
+      local name = arrowName[e:getKeyCode()]
+      if not name then return false end
+      if t == types.keyUp then held[name] = nil; return false end
+
+      if not f.alt or f.shift or f.ctrl or f.cmd then return false end
+      -- Swallow key repeat so holding Super+Down doesn't restore, then re-shrink.
+      if e:getProperty(hs.eventtap.event.properties.keyboardEventAutorepeat) ~= 0 then return true end
+      held[name] = true
+
+      withSnappableWindow(function(w)
+        local vertical = held.up and "up" or held.down and "down"
+        local side = held.left and "left" or held.right and "right"
+        if vertical and side then
+          snapTo(w, side == "left", vertical == "up")
+        elseif name == "left" or name == "right" then
+          snapSide(w, name == "left")
+        elseif name == "up" then
+          maximise(w)
+        else
+          restore(w)
+        end
+      end)()
+      return true
+    end
+  ):start()
 
   -- GNOME's Super+H hides the window; minimise is the Mac equivalent.
   hs.hotkey.bind(SUPER, "h", withWindow(function(w) w:minimize() end))

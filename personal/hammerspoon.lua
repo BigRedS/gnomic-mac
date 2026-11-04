@@ -2,8 +2,10 @@
 
 local M = {}
 
--- Overrides for the GNOME layer's defaults. Wide left window, narrow right.
+-- Overrides for the GNOME layer's defaults. External displays get a wide left
+-- window and a narrow right one.
 M.settings = {
+  splitExternal = 0.7,
   fullscreen = "maximise",
   -- The drop-down terminal is never tiled, and Super+arrow there is usually
   -- a missed Ctrl+arrow.

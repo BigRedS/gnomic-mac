@@ -10,9 +10,11 @@ end
 
 -- Defaults for the GNOME layer. A later layer can override these.
 local settings = {
-  -- GNOME snaps windows to halves.
-  snapLeft = hs.layout.left50,
-  snapRight = hs.layout.right50,
+  -- Width of a snapped left window as a fraction of the screen (the right one
+  -- gets the rest), on the built-in display and on external ones. GNOME
+  -- snaps to halves.
+  splitInternal = 0.5,
+  splitExternal = 0.5,
   -- Bundle IDs whose windows Super(+Shift)+arrows leave alone.
   noSnapApps = {},
   -- What tapping Super alone does. GNOME's Activities is two things at once,

@@ -10,7 +10,7 @@ It's split into three layers, because it's also got some of my personal preferen
 |---           |---|---|
 | `gnome`      | Tap Super to search, top-left corner for the overview, Super+arrows to snap, Alt+Tab between windows, Alt+F4, fixed desktops spanning all displays on Ctrl+Alt+arrows and Super+PgUp/PgDn, screenshots to file and clipboard, PC-style Home/End and word movement, Finder Delete key | Anyone used to GNOME |
 | `pc-keyboard` | Ctrl, Super and Alt where a PC keyboard has them, on the MacBook keyboard and on a PC keyboard in Mac mode | Anyone with a (British) PC-layout keyboard |
-| `personal`    | My apps, file associations, webcam fix, terminal, 70/30 snapping, no native full screen | Me. Read it as an example, or skip it |
+| `personal`    | My apps, file associations, webcam fix, terminal, 70/30 snapping on external displays, no native full screen | Me. Read it as an example, or skip it |
 
 This is documentation as much as automation; partly to remind me what I like, much of this I found by being surprised and then trying to remember what keypress I'd just tried to do. There's a few circles in the git history as I wrongly-assumed my preferences and habits.
 
@@ -162,7 +162,8 @@ Alt is the key next to the space bar, the cmd on the Macbook. It's overridden fo
 |---|---|---|---|
 | Tap **Super** on its own | Search (Spotlight); set `superTap = "overview"` in `hammerspoon/init.lua` for Mission Control | gnome | Karabiner + Hammerspoon |
 | Mouse to **top-left corner** | Mission Control | gnome | macOS hot corner (scripted) |
-| **Super + ← / →** | Snap window left / right (halves by default; 70/30 in personal) | gnome | Hammerspoon |
+| **Super + ← / →** | Snap window left / right (halves by default; personal makes external displays 70/30, wide on the left) | gnome | Hammerspoon |
+| **Super + ↑ + ← / →**, **Super + ↓ + ← / →** | Snap to a quarter: hold both arrows, either order | gnome | Hammerspoon |
 | **Super + ↑ / ↓** | Maximise / restore | gnome | Hammerspoon |
 | **Super + H** | Minimise window | gnome | Hammerspoon |
 | **Super + Shift + ← / →** | Window to other display | gnome | Hammerspoon |
